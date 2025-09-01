@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "layers.h": "c",
+        "mlp.h": "c",
+        "cmath": "c",
+        "complex": "c"
+    }
+}
