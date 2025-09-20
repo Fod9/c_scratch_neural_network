@@ -11,17 +11,27 @@ float generate_random_float(int min, int max) {
 
 Layer init_layer(int input_size, int size, const char* act_function) {
 
-    Layer layer;
+    Layer layer = (Layer){0};
 
-    snprintf(layer.act_function, sizeof(layer.act_function),"%s", act_function);
-    
+    snprintf(layer.act_function, sizeof(layer.act_function), "%s", act_function);
+
     layer.neuron_number = size;
     layer.input_size = input_size;
     layer.weights = malloc(layer.neuron_number * layer.input_size * sizeof(float));
+    if (layer.weights == NULL) {
+        fprintf(stderr, "Failed to allocate memory for layer weights.\n");
+        layer.neuron_number = 0;
+        layer.input_size = 0;
+        return layer;
+    }
     layer.bias = malloc(layer.neuron_number * sizeof(float));
-
-    if(layer.weights == NULL) {
-        printf("MALLOC ALLOCATION FAILED");
+    if (layer.bias == NULL) {
+        fprintf(stderr, "Failed to allocate memory for layer bias.\n");
+        free(layer.weights);
+        layer.weights = NULL;
+        layer.neuron_number = 0;
+        layer.input_size = 0;
+        return layer;
     }
 
 
@@ -38,7 +48,7 @@ Layer init_layer(int input_size, int size, const char* act_function) {
         }
     };
 
-    
+
     return layer;
 };
 
@@ -75,6 +85,9 @@ int print_layer_specs(const Layer* layer) {
 
 float* forward_layer(const Layer* layer, const float* inputs) {
     float* outputs = malloc(layer->neuron_number * sizeof(float));
+    if (outputs == NULL) {
+        return NULL;
+    }
     
     for(int neuron_index = 0; neuron_index < layer->neuron_number; neuron_index++) {
         float sum = layer->bias[neuron_index];

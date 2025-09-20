@@ -5,20 +5,48 @@
 
 
 NeuralNetwork init_neural_network(int input_size, int output_size, int neuron_for_each_layers[], int number_of_layer) {
-    NeuralNetwork mlp;
+    NeuralNetwork mlp = (NeuralNetwork){0};
 
     int hidden_layers = number_of_layer;
-    mlp.num_layers = hidden_layers + 1; 
+    mlp.num_layers = hidden_layers + 1;
     mlp.layers = malloc(mlp.num_layers * sizeof(Layer));
+    if (mlp.layers == NULL) {
+        fprintf(stderr, "Failed to allocate memory for neural network layers.\n");
+        mlp.num_layers = 0;
+        return mlp;
+    }
+
     mlp.output_size = output_size;
     int latest_input_size = input_size;
 
     for (int i = 0; i < hidden_layers; i++) {
         mlp.layers[i] = init_layer(latest_input_size, neuron_for_each_layers[i], "sigmoid");
+        if (mlp.layers[i].weights == NULL || mlp.layers[i].bias == NULL) {
+            fprintf(stderr, "Failed to initialize hidden layer %d.\n", i);
+            for (int j = 0; j < i; ++j) {
+                free_layer(&mlp.layers[j]);
+            }
+            free(mlp.layers);
+            mlp.layers = NULL;
+            mlp.num_layers = 0;
+            mlp.output_size = 0;
+            return mlp;
+        }
         latest_input_size = neuron_for_each_layers[i];
     }
 
     mlp.layers[hidden_layers] = init_layer(latest_input_size, output_size, "sigmoid");
+    if (mlp.layers[hidden_layers].weights == NULL || mlp.layers[hidden_layers].bias == NULL) {
+        fprintf(stderr, "Failed to initialize output layer.\n");
+        for (int j = 0; j < hidden_layers; ++j) {
+            free_layer(&mlp.layers[j]);
+        }
+        free(mlp.layers);
+        mlp.layers = NULL;
+        mlp.num_layers = 0;
+        mlp.output_size = 0;
+        return mlp;
+    }
 
     return mlp;
 }
@@ -58,7 +86,10 @@ int print_mlp_specs(NeuralNetwork mlp) {
     return 1;
 }
 float* forward_network(const NeuralNetwork* mlp, const float* inputs) {
-    const float* current_input = inputs;   
+    if (mlp == NULL || mlp->layers == NULL || mlp->num_layers <= 0) {
+        return NULL;
+    }
+    const float* current_input = inputs;
     float* output = NULL;
 
     for (int i = 0; i < mlp->num_layers; ++i) {
