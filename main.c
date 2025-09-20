@@ -26,6 +26,10 @@ int main() {
     float real[5] = {1,2,3,4,5}; 
 
     NeuralNetwork mlp = init_neural_network(1,5,neurons_for_each_layers, 6);
+    if (mlp.layers == NULL) {
+        fprintf(stderr, "Failed to initialize neural network.\n");
+        return EXIT_FAILURE;
+    }
     float input = 1.0f;
     float *result = forward_network(&mlp, &input);
 
@@ -36,6 +40,8 @@ int main() {
         printf("%f ",result[result_index]);
       }
       printf("\n");
+    } else {
+      fprintf(stderr, "Failed to compute network outputs.\n");
     }
     free_neural_network(&mlp);
     float loss = 0.0f;
