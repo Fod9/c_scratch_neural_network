@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -I. -Ilayers -Imlp
+LDFLAGS = -lm
 TARGET = main
 SRCDIR = .
 
@@ -9,7 +10,7 @@ OBJECTS = $(SOURCES:.c=.o)
 
 # Règle principale : crée l'exécutable
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET) -lm
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 # Règle générique : compile chaque .c en .o
 %.o: %.c
