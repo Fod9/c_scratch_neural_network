@@ -109,5 +109,5 @@ float* forward_network(const NeuralNetwork* mlp, const float* inputs) {
 }
 
 void backward_network(const NeuralNetwork* mlp) {
-    
+    (void)mlp;
 }
