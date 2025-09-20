@@ -44,7 +44,7 @@ int print_mlp_specs(NeuralNetwork mlp) {
     int memory_used = 0;
     for(int layer_index = 0; layer_index < mlp.num_layers; layer_index++) {
 
-        LayerInfo layer_info = calcul_layer_info(mlp.layers[layer_index]);
+        LayerInfo layer_info = calcul_layer_info(&mlp.layers[layer_index]);
 
         number_of_weights += layer_info.num_weights;
         number_of_neurons += layer_info.num_neurons;
@@ -62,7 +62,7 @@ float* forward_network(const NeuralNetwork* mlp, const float* inputs) {
     float* output = NULL;
 
     for (int i = 0; i < mlp->num_layers; ++i) {
-        output = forward_layer(mlp->layers[i], current_input);
+        output = forward_layer(&mlp->layers[i], current_input);
         if (!output) {
             if (current_input != inputs) {
                 free((void*)current_input);
@@ -78,5 +78,5 @@ float* forward_network(const NeuralNetwork* mlp, const float* inputs) {
 }
 
 void backward_network(const NeuralNetwork* mlp) {
-    
+    (void)mlp;
 }
