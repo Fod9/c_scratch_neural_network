@@ -3,7 +3,7 @@
 
 #include "type.h"
 
-Layer init_layer(int input_size, int size, char act_function[30]);
+Layer init_layer(int input_size, int size, const char* act_function);
 
 void free_layer(Layer* layer);
 

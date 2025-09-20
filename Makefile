@@ -9,7 +9,7 @@ OBJECTS = $(SOURCES:.c=.o)
 
 # Règle principale : crée l'exécutable
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET)
+	$(CC) $(OBJECTS) -o $(TARGET) -lm
 
 # Règle générique : compile chaque .c en .o
 %.o: %.c
